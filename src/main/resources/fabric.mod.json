@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "spookygraves",
+  "version": "${version}",
+  "name": "Spooky Graves",
+  "description": "This mod adds graves with a twist",
+  "authors": [
+    "Rick"
+  ],
+  "contact": {
+    "website": "https://github.com/YeetAtTheBluWolf",
+    "repo": "https://github.com/YeetAtTheBluWolf/Spooky-Graves"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/spookygraves/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.brasscord.mods.spookygraves.client.SpookygravesClient"
+    ],
+    "main": [
+      "net.brasscord.mods.spookygraves.Spookygraves"
+    ]
+  },
+  "mixins": [
+    "spookygraves.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "fabric": "*",
+    "minecraft": "1.19.2"
+  }
+}
