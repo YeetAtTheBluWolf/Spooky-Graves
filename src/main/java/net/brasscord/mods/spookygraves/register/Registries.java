@@ -17,8 +17,13 @@ public class Registries {
 
     public void getRegistries()
     {
+
+        // Blocks
         BlockRegister.register("grave", graveBlock);
+
+        // Items
         ItemRegister.register("grave", graveItem);
+
     }
 
 }
