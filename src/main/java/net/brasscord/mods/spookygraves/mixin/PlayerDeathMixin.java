@@ -16,7 +16,9 @@ public class PlayerDeathMixin {
     @Inject(at = @At("HEAD"), method = "onDeath")
     private void onDeath(DamageSource damageSource, CallbackInfo ci)
     {
+        System.out.println("[Spooky-Graves] Running death event!");
         PlayerDeathCallback.EVENT.invoker();
+
     }
 
 
