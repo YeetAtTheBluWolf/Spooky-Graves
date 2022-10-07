@@ -1,25 +1,34 @@
 package net.brasscord.mods.spookygraves.mixin;
 
-import net.brasscord.mods.spookygraves.events.PlayerDeathCallback;
+import net.brasscord.mods.spookygraves.Spookygraves;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(PlayerEntity.class)
-public class PlayerDeathMixin {
+public abstract class PlayerDeathMixin extends LivingEntity{
 
-    @Inject(at = @At("HEAD"), method = "onDeath")
-    private void onDeath(DamageSource damageSource, CallbackInfo ci)
+    @Shadow @Final private PlayerInventory inventory;
+
+    protected PlayerDeathMixin(EntityType<? extends LivingEntity> type, World world)
     {
-        System.out.println("[Spooky-Graves] Running death event!");
-        PlayerDeathCallback.EVENT.invoker();
-
+        super(type, world);
     }
+
+    @Redirect(method = "dropInventory", at = @At(target = "net.minecraft.entity.player.PlayerInventory.dropAll()V", value = "INVOKE"))
+    public void dropAll(PlayerInventory inventory) {
+        Spookygraves.graveInstrument(this.world, this.getPos(), this.inventory.player);
+        System.out.println("At dropAll method.");
+    }
+
 
 
 }
