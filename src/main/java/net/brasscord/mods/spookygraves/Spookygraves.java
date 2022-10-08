@@ -4,6 +4,7 @@ import net.brasscord.mods.spookygraves.entities.blocks.GraveBlockEntity;
 import net.brasscord.mods.spookygraves.register.Registries;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -11,6 +12,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
@@ -19,14 +22,13 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
+import java.util.Objects;
+
 import static net.brasscord.mods.spookygraves.register.Registries.SET_WORLD_PACKET;
 import static net.brasscord.mods.spookygraves.register.Registries.graveBlock;
 
 public class Spookygraves implements ModInitializer {
     //Doing some work, and found a beautiful seed 6412750098519794633
-
-    // Data
-    private static PacketByteBuf data;
 
     public static final String id = "spookygraves";
 
@@ -49,11 +51,15 @@ public class Spookygraves implements ModInitializer {
             BlockPos pos = buf.readBlockPos();
             Block blockToSet = Registry.BLOCK.get(buf.readIdentifier());
 
-            server.execute(() -> {
-                player.getWorld().setBlockState(pos, blockToSet.getDefaultState()); // changing the block state
-
-            });
+            server.execute(() -> player.getWorld().setBlockState(pos, blockToSet.getDefaultState().with(Properties.HORIZONTAL_FACING, player.getHorizontalFacing())));
         });
+
+        PlayerBlockBreakEvents.AFTER.register(((world, player, pos, state, blockEntity) -> {
+            if(state.isOf(graveBlock) && Objects.requireNonNull(GRAVE.get(world, pos)).getOwner() == player.getGameProfile())
+            {
+                player.giveItemStack(new ItemStack(() -> Item.byRawId(304)));
+            }
+        }));
 
     }
 
@@ -64,14 +70,13 @@ public class Spookygraves implements ModInitializer {
 
         BlockPos blockPos = new BlockPos(position.x, position.y, position.z);
         BlockState blockState = world.getBlockState(blockPos);
-        BlockState setBlock = Registries.graveBlock.getDefaultState().with(Properties.HORIZONTAL_FACING, player.getHorizontalFacing());
+
         GraveBlockEntity graveBlockEntity = new GraveBlockEntity(blockPos, blockState);
         graveBlockEntity.setOwner(player.getGameProfile());
 
         PacketByteBuf data = PacketByteBufs.create();
         data.writeBlockPos(blockPos);
         data.writeIdentifier(new Identifier(id, "grave"));
-
 
         ClientPlayNetworking.send(SET_WORLD_PACKET, data);
 

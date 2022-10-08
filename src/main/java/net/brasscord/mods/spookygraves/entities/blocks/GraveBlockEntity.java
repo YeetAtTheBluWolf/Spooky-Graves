@@ -24,4 +24,6 @@ public class GraveBlockEntity extends BlockEntity {
         this.owner = owner;
     }
 
+
+
 }
