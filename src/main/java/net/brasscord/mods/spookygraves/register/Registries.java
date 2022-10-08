@@ -2,10 +2,8 @@ package net.brasscord.mods.spookygraves.register;
 
 import net.brasscord.mods.spookygraves.Spookygraves;
 import net.brasscord.mods.spookygraves.blocks.GraveBlock;
-import net.brasscord.mods.spookygraves.entities.GraveBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Material;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -30,9 +28,6 @@ public class Registries {
 
         // Items
         ItemRegister.register("grave", graveItem);
-
-        // BlockEntities
-//        public static final BlockEntityType<GraveBlockEntity>
 
     }
 

@@ -6,7 +6,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,8 +24,8 @@ public abstract class PlayerDeathMixin extends LivingEntity{
 
     @Redirect(method = "dropInventory", at = @At(target = "net.minecraft.entity.player.PlayerInventory.dropAll()V", value = "INVOKE"))
     public void dropAll(PlayerInventory inventory) {
-        Spookygraves.graveInstrument(this.world, this.getPos(), this.inventory.player);
-        System.out.println("At dropAll method.");
+        Spookygraves.graveInsert(this.world, this.getPos(), this.inventory.player);
+        System.out.println("Exiting dropAll method.");
     }
 
 
