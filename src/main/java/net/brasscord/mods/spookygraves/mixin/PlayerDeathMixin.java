@@ -22,6 +22,12 @@ public abstract class PlayerDeathMixin extends LivingEntity{
         super(type, world);
     }
 
+    /**
+    * This method is a redirect of the dropAll call. This redirects to this method which calls to insert a grave block.
+    * After calling the graveInsert method then it prints that the method has ran.
+    *
+    * @param  inventory  This is a PlayInventory that is used to get the player and will later be used to store the inventory.
+    */
     @Redirect(method = "dropInventory", at = @At(target = "net.minecraft.entity.player.PlayerInventory.dropAll()V", value = "INVOKE"))
     public void dropAll(PlayerInventory inventory) {
         Spookygraves.graveInsert(this.world, this.getPos(), this.inventory.player);
