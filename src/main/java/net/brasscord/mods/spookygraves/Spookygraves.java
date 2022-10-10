@@ -72,12 +72,12 @@ public class Spookygraves implements ModInitializer {
     * @param  position  A Vec3d of the position of the player when the method was called.
     * @param  player  This PlayerEntity is used to set the owner of the grave.
     */
-    public static void graveInsert(World world, Vec3d position, PlayerEntity player)
+    public static void graveInsert(World world, Vec3d pos, PlayerEntity player)
     {
         if(world.isClient)
             return;
 
-        BlockPos blockPos = new BlockPos(position.x, position.y, position.z);
+        BlockPos blockPos = new BlockPos(pos.x, pos.y, pos.z);
         BlockState blockState = world.getBlockState(blockPos);
 
         GraveBlockEntity graveBlockEntity = new GraveBlockEntity(blockPos, blockState);
