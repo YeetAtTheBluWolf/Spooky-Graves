@@ -14,11 +14,21 @@ public class GraveBlockEntity extends BlockEntity {
         super(Spookygraves.GRAVE, pos, state);
     }
 
+    /**
+    * This is used to get the owner.
+    *
+    * @return  owner  Owner is a Game Profile that is to prove that the user is the owner of the grave.
+    */
     public GameProfile getOwner()
     {
         return owner;
     }
 
+    /**
+    * This is used to set the owner of the grave
+    * 
+    * @param  owner  This param is a GameProfile param that sets the owner variable.
+    */
     public void setOwner(GameProfile owner)
     {
         this.owner = owner;

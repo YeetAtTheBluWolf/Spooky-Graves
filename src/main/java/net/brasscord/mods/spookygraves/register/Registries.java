@@ -20,6 +20,9 @@ public class Registries {
     // Identifier
     public final static Identifier SET_WORLD_PACKET = new Identifier(Spookygraves.id, "setblock");
 
+    /**
+    * This registers items and blocks.
+    */
     public void getRegistries()
     {
 

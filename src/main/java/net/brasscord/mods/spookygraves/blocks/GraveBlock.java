@@ -17,12 +17,24 @@ public class GraveBlock extends Block implements BlockEntityProvider {
         super(settings);
     }
 
+    /**
+    * This method adds the ability to change the way the grave faces.
+    *
+    * @param  stateManager  This param adds a StateManager builder which adds the capabilities to change the state.
+    */
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> stateManager)
     {
         stateManager.add(FACING);
     }
 
+    /**
+    * This adds the capabilities of a Grave Block Entity.
+    *
+    * @param  pos  The position is used to create a new GraveBlockEntity.
+    * @param  state  The state is used to create a new GraveBlockEntity.
+    * @return  new GraveBlockEntity  This creates a new grave block entity using the position and state param.
+    */
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {

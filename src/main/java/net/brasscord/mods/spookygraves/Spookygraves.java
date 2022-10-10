@@ -35,7 +35,8 @@ public class Spookygraves implements ModInitializer {
     public static BlockEntityType<GraveBlockEntity> GRAVE;
 
     @Override
-    public void onInitialize() {
+    public void onInitialize() 
+    {
         registries.getRegistries();
 
         GRAVE = Registry.register(
@@ -61,12 +62,22 @@ public class Spookygraves implements ModInitializer {
 
     }
 
-    public static void graveInsert(World world, Vec3d position, PlayerEntity player)
+    /**
+    * This method gets the player position and world. If the player is a client of a server then it will return and let the server do the job instead. 
+    * It gets the BlockState at the position and then we create a Grave block entity and set the owner to the player.
+    * We then create a packet and then we write the block position to the packet along with a identifier with the grave block id.
+    * After all this we send the packet and print a message saying the method has been ran.
+    *
+    * @param  world  The world where the player was at the point in time.
+    * @param  position  A Vec3d of the position of the player when the method was called.
+    * @param  player  This PlayerEntity is used to set the owner of the grave.
+    */
+    public static void graveInsert(World world, Vec3d pos, PlayerEntity player)
     {
         if(world.isClient)
             return;
 
-        BlockPos blockPos = new BlockPos(position.x, position.y, position.z);
+        BlockPos blockPos = new BlockPos(pos.x, pos.y, pos.z);
         BlockState blockState = world.getBlockState(blockPos);
 
         GraveBlockEntity graveBlockEntity = new GraveBlockEntity(blockPos, blockState);
