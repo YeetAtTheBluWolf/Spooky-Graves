@@ -6,9 +6,10 @@ import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
+
+import static net.minecraft.state.property.Properties.FACING;
 
 public class GraveBlock extends Block implements BlockEntityProvider {
 
@@ -19,7 +20,7 @@ public class GraveBlock extends Block implements BlockEntityProvider {
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> stateManager)
     {
-        stateManager.add(Properties.HORIZONTAL_FACING);
+        stateManager.add(FACING);
     }
 
     @Nullable

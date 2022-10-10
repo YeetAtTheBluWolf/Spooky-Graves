@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "spookygraves:block/placeholder",
+    "side": "spookygraves:block/placeholder",
+    "top": "spookygraves:block/placeholder"
+  }
+}
+

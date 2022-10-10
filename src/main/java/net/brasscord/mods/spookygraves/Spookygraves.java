@@ -22,8 +22,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-import java.util.Objects;
-
 import static net.brasscord.mods.spookygraves.register.Registries.SET_WORLD_PACKET;
 import static net.brasscord.mods.spookygraves.register.Registries.graveBlock;
 
@@ -55,7 +53,7 @@ public class Spookygraves implements ModInitializer {
         });
 
         PlayerBlockBreakEvents.AFTER.register(((world, player, pos, state, blockEntity) -> {
-            if(state.isOf(graveBlock) && Objects.requireNonNull(GRAVE.get(world, pos)).getOwner() == player.getGameProfile())
+            if(state.isOf(graveBlock)/* && Objects.requireNonNull(GRAVE.get(world, pos)).getOwner() == player.getGameProfile()*/)
             {
                 player.giveItemStack(new ItemStack(() -> Item.byRawId(304)));
             }

@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "spookygraves:block/grave",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "spookygraves:block/grave",
+      "y": 0
+    },
+    "facing=south": {
+      "model": "spookygraves:block/grave",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "spookygraves:block/grave",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "spookygraves:block/grave",
+      "y": 0
+    },
+    "facing=down": {
+      "model": "spookygraves:block/grave",
+      "y": 0
+    }
+  }
+}
