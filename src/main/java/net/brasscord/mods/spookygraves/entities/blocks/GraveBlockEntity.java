@@ -17,7 +17,7 @@ public class GraveBlockEntity extends BlockEntity {
     /**
     * This is used to get the owner.
     *
-    * @return  owner  Owner is a Game Profile that is to prove that the user is the owner of the grave.
+    * @return  owner is a Game Profile that is to prove that the user is the owner of the grave.
     */
     public GameProfile getOwner()
     {

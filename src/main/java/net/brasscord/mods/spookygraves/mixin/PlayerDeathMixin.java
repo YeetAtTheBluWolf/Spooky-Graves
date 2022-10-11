@@ -24,7 +24,7 @@ public abstract class PlayerDeathMixin extends LivingEntity{
 
     /**
     * This method is a redirect of the dropAll call. This redirects to this method which calls to insert a grave block.
-    * After calling the graveInsert method then it prints that the method has ran.
+    * After calling the graveInsert method then it prints that the method has run.
     *
     * @param  inventory  This is a PlayInventory that is used to get the player and will later be used to store the inventory.
     */
