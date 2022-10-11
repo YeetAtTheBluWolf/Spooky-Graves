@@ -30,7 +30,7 @@ public abstract class PlayerDeathMixin extends LivingEntity{
     */
     @Redirect(method = "dropInventory", at = @At(target = "net.minecraft.entity.player.PlayerInventory.dropAll()V", value = "INVOKE"))
     public void dropAll(PlayerInventory inventory) {
-        Spookygraves.graveInsert(this.world, this.getPos(), this.inventory.player);
+        Spookygraves.graveInsert(this.world, this.getPos(), this.inventory.player, inventory);
         System.out.println("Exiting dropAll method.");
     }
 
