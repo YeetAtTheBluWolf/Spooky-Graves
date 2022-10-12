@@ -13,7 +13,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
@@ -53,17 +52,13 @@ public class Spookygraves implements ModInitializer {
             server.execute(() -> player.getWorld().setBlockState(pos, blockToSet.getDefaultState().with(Properties.FACING, player.getMovementDirection())));
         });
 
-        PlayerBlockBreakEvents.AFTER.register(((world, player, pos, state, blockEntity) -> {
-            if(state.isOf(graveBlock)/* && Objects.requireNonNull(GRAVE.get(world, pos)).getOwner() == player.getGameProfile()*/)
+        PlayerBlockBreakEvents.BEFORE.register(((world, player, pos, state, blockEntity) -> {
+            if(blockEntity instanceof GraveBlockEntity graveBlockEntity)
             {
-                for (ItemStack itemStack : GRAVE.get(world, pos).getInvStackList())
-                {
-                    if(itemStack != ItemStack.EMPTY)
-                    {
-                        player.giveItemStack(itemStack);
-                    }
-                }
+                if(graveBlockEntity.getOwner() != null)
+                    return false;
             }
+            return true;
         }));
 
     }
@@ -95,32 +90,15 @@ public class Spookygraves implements ModInitializer {
         GraveBlockEntity graveBlockEntity = new GraveBlockEntity(blockPos, blockState);
         graveBlockEntity.setOwner(player.getGameProfile());
 
-        if(!inventory.isEmpty())
-        {
-            graveBlockEntity.setTotalExperience(player.getXpToDrop());
+        graveBlockEntity.getInvStackList().addAll(inventory.main);
+        graveBlockEntity.getInvStackList().addAll(inventory.armor);
+        graveBlockEntity.getInvStackList().addAll(inventory.offHand);
 
-            int slot = 0;
-            for (ItemStack itemStack : inventory.main)
-            {
-                if(!(slot == graveBlockEntity.size()))
-                {
-                    graveBlockEntity.setStack(slot, itemStack);
-                    slot++;
-                }
-            }
+        graveBlockEntity.setTotalExperience(player.totalExperience);
 
-            for (ItemStack itemStack : inventory.armor)
-            {
-                graveBlockEntity.setStack(slot, itemStack);
-                slot++;
-            }
-
-            for (ItemStack itemStack : inventory.offHand)
-            {
-                graveBlockEntity.setStack(slot, itemStack);
-                slot++;
-            }
-        }
+        player.totalExperience = 0;
+        player.experienceProgress = 0;
+        player.experienceLevel = 0;
 
         System.out.println("Executed the graveInsert method.");
 

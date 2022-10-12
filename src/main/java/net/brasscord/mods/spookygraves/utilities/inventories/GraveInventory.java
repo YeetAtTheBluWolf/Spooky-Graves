@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.collection.DefaultedList;
 
 public interface GraveInventory extends Inventory {
@@ -55,4 +56,8 @@ public interface GraveInventory extends Inventory {
     default void clear() {
         this.getInvStackList().clear();
     }
+
+    NbtCompound toClientTag(NbtCompound tag);
+
+    void fromClientTag(NbtCompound tag);
 }
