@@ -5,7 +5,10 @@ import net.brasscord.mods.spookygraves.Spookygraves;
 import net.brasscord.mods.spookygraves.utilities.inventories.IGraveInventory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 
@@ -52,6 +55,48 @@ public class GraveBlockEntity extends BlockEntity implements IGraveInventory {
     public void setTotalExperience(int totalExperience)
     {
         this.totalExperience = totalExperience;
+    }
+
+    @Override
+    public void readNbt(NbtCompound tag) {
+        super.readNbt(tag);
+
+        this.items = DefaultedList.ofSize(tag.getInt("ItemCount"), ItemStack.EMPTY);
+
+        Inventories.readNbt(tag.getCompound("Items"), this.items);
+
+        this.totalExperience = tag.getInt("XP");
+
+        if(tag.contains("GraveOwner"))
+            this.owner = NbtHelper.toGameProfile(tag.getCompound("GraveOwner"));
+    }
+
+    @Override
+    public void writeNbt(NbtCompound tag) {
+        super.writeNbt(tag);
+
+        tag.putInt("ItemCount", this.items.size());
+
+        tag.put("Items", Inventories.writeNbt(new NbtCompound(), this.items, true));
+
+        tag.putInt("XP", totalExperience);
+
+        if(owner != null)
+            tag.put("GraveOwner", NbtHelper.writeGameProfile(new NbtCompound(), owner));
+    }
+
+    @Override
+    public NbtCompound toClientTag(NbtCompound tag) {
+        if(owner != null)
+            tag.put("GraveOwner", NbtHelper.writeGameProfile(new NbtCompound(), this.owner));
+
+        return tag;
+    }
+
+    @Override
+    public void fromClientTag(NbtCompound tag) {
+        if(tag.contains("GraveOwner"))
+            this.owner = NbtHelper.toGameProfile(tag.getCompound("GraveOwner"));
     }
 
 }
