@@ -7,7 +7,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 
-public interface GraveInventory extends Inventory {
+public interface IGraveInventory extends Inventory {
 
     DefaultedList<ItemStack> getInvStackList();
 

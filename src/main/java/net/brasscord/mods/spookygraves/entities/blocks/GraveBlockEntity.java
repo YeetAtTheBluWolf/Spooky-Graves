@@ -2,14 +2,14 @@ package net.brasscord.mods.spookygraves.entities.blocks;
 
 import com.mojang.authlib.GameProfile;
 import net.brasscord.mods.spookygraves.Spookygraves;
-import net.brasscord.mods.spookygraves.utilities.inventories.GraveInventory;
+import net.brasscord.mods.spookygraves.utilities.inventories.IGraveInventory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 
-public class GraveBlockEntity extends BlockEntity implements GraveInventory {
+public class GraveBlockEntity extends BlockEntity implements IGraveInventory {
 
     private DefaultedList<ItemStack> items = DefaultedList.ofSize(size(), ItemStack.EMPTY);
     private GameProfile owner;
