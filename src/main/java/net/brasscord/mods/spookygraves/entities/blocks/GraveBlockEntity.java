@@ -14,12 +14,14 @@ import net.minecraft.util.math.BlockPos;
 
 public class GraveBlockEntity extends BlockEntity implements IGraveInventory {
 
-    private DefaultedList<ItemStack> items = DefaultedList.ofSize(size(), ItemStack.EMPTY);
+    private DefaultedList<ItemStack> items;
     private GameProfile owner;
     private int totalExperience;
 
     public GraveBlockEntity(BlockPos pos, BlockState state) {
         super(Spookygraves.GRAVE, pos, state);
+
+        this.items = DefaultedList.ofSize(size(), ItemStack.EMPTY);
     }
 
     /**
@@ -40,6 +42,7 @@ public class GraveBlockEntity extends BlockEntity implements IGraveInventory {
     public void setOwner(GameProfile owner)
     {
         this.owner = owner;
+        this.markDirty();
     }
 
     @Override
@@ -55,6 +58,7 @@ public class GraveBlockEntity extends BlockEntity implements IGraveInventory {
     public void setTotalExperience(int totalExperience)
     {
         this.totalExperience = totalExperience;
+        this.markDirty();
     }
 
     @Override

@@ -48,8 +48,9 @@ public class Spookygraves implements ModInitializer {
 
             BlockPos pos = buf.readBlockPos();
             Block blockToSet = Registry.BLOCK.get(buf.readIdentifier());
-
-            server.execute(() -> player.getWorld().setBlockState(pos, blockToSet.getDefaultState().with(Properties.FACING, player.getMovementDirection())));
+            server.execute(() -> {
+                player.getWorld().setBlockState(pos, blockToSet.getDefaultState().with(Properties.FACING, player.getMovementDirection()));
+            });
         });
 
         PlayerBlockBreakEvents.BEFORE.register(((world, player, pos, state, blockEntity) -> {
