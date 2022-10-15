@@ -1,5 +1,6 @@
 package net.brasscord.mods.spookygraves;
 
+import net.brasscord.mods.spookygraves.blocks.GraveBlock;
 import net.brasscord.mods.spookygraves.entities.blocks.GraveBlockEntity;
 import net.brasscord.mods.spookygraves.register.Registries;
 import net.fabricmc.api.ModInitializer;
@@ -82,6 +83,8 @@ public class Spookygraves implements ModInitializer {
 
         BlockPos blockPos = new BlockPos(position.x, position.y, position.z);
         BlockState blockState = world.getBlockState(blockPos);
+        GraveBlock block = (GraveBlock) blockState.getBlock();
+        int experience = player.totalExperience;
 
         PacketByteBuf data = PacketByteBufs.create();
         data.writeBlockPos(blockPos);
@@ -96,6 +99,8 @@ public class Spookygraves implements ModInitializer {
         graveBlockEntity.getInvStackList().addAll(inventory.offHand);
 
         graveBlockEntity.setTotalExperience(player.totalExperience);
+
+        block.onBreak(world, player, blockPos, blockState, experience);
 
         player.totalExperience = 0;
         player.experienceProgress = 0;

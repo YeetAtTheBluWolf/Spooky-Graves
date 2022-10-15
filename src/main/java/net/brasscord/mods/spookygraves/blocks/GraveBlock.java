@@ -10,6 +10,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -50,13 +51,15 @@ public class GraveBlock extends Block implements BlockEntityProvider {
         return new GraveBlockEntity(pos, state);
     }
 
-    @Override
-    public void onSteppedOn()
+    public void onBreak(World world, PlayerEntity player, BlockPos pos, BlockState blockState, int experience)
     {
+        if(retrieveGrave(player, world, pos, experience))
+            return;
 
+        super.onBreak(world, pos, blockState, player);
     }
 
-    public boolean retrieveGrave(PlayerEntity player, World world, BlockPos pos)
+    public boolean retrieveGrave(PlayerEntity player, World world, BlockPos pos, int experience)
     {
 
         if(world.isClient)
@@ -67,17 +70,15 @@ public class GraveBlock extends Block implements BlockEntityProvider {
         if(!(block instanceof GraveBlockEntity graveBlockEntity))
             return false;
 
-        GraveBlockEntity convertedBlock = (GraveBlockEntity) block;
-
-        if(convertedBlock.getOwner() == null)
+        if(graveBlockEntity.getOwner() == null)
             return false;
-        if(convertedBlock.getInvStackList() == null)
+        if(graveBlockEntity.getInvStackList() == null)
             return false;
 
-        if(!player.getGameProfile().getId().equals(convertedBlock.getOwner().getId()))
+        if(!player.getGameProfile().getId().equals(graveBlockEntity.getOwner().getId()))
             return false;
 
-        DefaultedList<ItemStack> itemStacks = convertedBlock.getInvStackList();
+        DefaultedList<ItemStack> itemStacks = graveBlockEntity.getInvStackList();
         DefaultedList<ItemStack> retrieval = DefaultedList.of();
 
         retrieval.addAll(player.getInventory().main);
@@ -87,19 +88,63 @@ public class GraveBlock extends Block implements BlockEntityProvider {
         player.getInventory().clear();
 
         List<ItemStack> armor = itemStacks.subList(36, 40);
-        for(int i = 0; i < armor.size(); i++)
-        {
-            EquipmentSlot equipmentSlot = MobEntity.getPreferredEquipmentSlot(armor.get(i));
-            player.equipStack(equipmentSlot, armor.get(i));
+        for (ItemStack stack : armor) {
+            EquipmentSlot equipmentSlot = MobEntity.getPreferredEquipmentSlot(stack);
+            player.equipStack(equipmentSlot, stack);
         }
 
         player.equipStack(EquipmentSlot.OFFHAND, itemStacks.get(40));
+        List<ItemStack> mainInventory = itemStacks.subList(0, 36);
 
+        for (ItemStack itemStack : mainInventory) {
+            player.giveItemStack(itemStack);
+        }
 
+        DefaultedList<ItemStack> extraItems = DefaultedList.of();
+        List<Integer> openArmorSlots = getInventoryOpenSlots(player.getInventory().armor);
 
+        for(int i = 0; i < 4; i++)
+        {
+            if(openArmorSlots.contains(i))
+                player.equipStack(EquipmentSlot.fromTypeIndex(EquipmentSlot.Type.ARMOR, i), retrieval.subList(36, 40).get(i));
+            else
+                extraItems.add(retrieval.subList(36, 40).get(i));
+        }
 
+        if(player.getInventory().offHand.get(0) == ItemStack.EMPTY)
+            player.equipStack(EquipmentSlot.OFFHAND, retrieval.get(40));
+        else
+            extraItems.add(retrieval.get(40));
 
+        extraItems.addAll(retrieval.subList(0, 36));
+
+        if(retrieval.size() > 41)
+            extraItems.addAll(retrieval.subList(41, retrieval.size()));
+
+        List<Integer> openSlots = getInventoryOpenSlots(player.getInventory().main);
+
+        for(int i = 0; i < openSlots.size(); i++)
+            player.getInventory().main.add(openSlots.size(), extraItems.get(i));
+
+        DefaultedList<ItemStack> droppedItems = DefaultedList.of();
+        droppedItems.addAll(extraItems.subList(openSlots.size(), extraItems.size()));
+        ItemScatterer.spawn(world, pos, droppedItems);
+
+        player.addExperience(experience);
+
+        world.removeBlock(pos, false);
         return true;
+    }
+
+    private List<Integer> getInventoryOpenSlots(DefaultedList<ItemStack> inventory) {
+        List<Integer> openSlots = new ArrayList<>();
+
+        for (int i = 0; i < inventory.size(); i++) {
+            if(inventory.get(i) == ItemStack.EMPTY)
+                openSlots.add(i);
+        }
+
+        return openSlots;
     }
 
 }
