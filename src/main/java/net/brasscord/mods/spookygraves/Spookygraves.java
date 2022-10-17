@@ -84,27 +84,29 @@ public class Spookygraves implements ModInitializer {
         BlockPos blockPos = new BlockPos(position.x, position.y, position.z);
         BlockState blockState = world.getBlockState(blockPos);
         GraveBlock block = (GraveBlock) blockState.getBlock();
+
+        GraveBlockEntity graveBlockEntity = new GraveBlockEntity(blockPos, blockState);
+
         int experience = player.totalExperience;
+        graveBlockEntity.setOwner(player.getGameProfile());
+
+        player.totalExperience = 0;
+        player.experienceProgress = 0;
+        player.experienceLevel = 0;
 
         PacketByteBuf data = PacketByteBufs.create();
         data.writeBlockPos(blockPos);
         data.writeIdentifier(new Identifier(id, "grave"));
         ClientPlayNetworking.send(SET_WORLD_PACKET, data);
 
-        GraveBlockEntity graveBlockEntity = new GraveBlockEntity(blockPos, blockState);
-        graveBlockEntity.setOwner(player.getGameProfile());
+        graveBlockEntity.sync();
+        block.onBreak(world, player, blockPos, blockState, experience);
 
         graveBlockEntity.getInvStackList().addAll(inventory.main);
         graveBlockEntity.getInvStackList().addAll(inventory.armor);
         graveBlockEntity.getInvStackList().addAll(inventory.offHand);
 
         graveBlockEntity.setTotalExperience(player.totalExperience);
-
-        block.onBreak(world, player, blockPos, blockState, experience);
-
-        player.totalExperience = 0;
-        player.experienceProgress = 0;
-        player.experienceLevel = 0;
 
         System.out.println("Executed the graveInsert method.");
 
