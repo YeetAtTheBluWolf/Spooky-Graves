@@ -8,22 +8,26 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.collection.DefaultedList;
 
-public interface IGraveInventory extends Inventory {
+public interface IGraveInventory extends Inventory
+{
 
     DefaultedList<ItemStack> getInvStackList();
 
     @Override
-    default int size() {
+    default int size()
+    {
         return PlayerInventory.MAIN_SIZE + 5;
     }
 
     @Override
-    default boolean isEmpty() {
+    default boolean isEmpty()
+    {
         return this.getInvStackList().stream().allMatch(ItemStack::isEmpty);
     }
 
     @Override
-    default ItemStack getStack(int slot) {
+    default ItemStack getStack(int slot)
+    {
         return this.getInvStackList().get(slot);
     }
 
@@ -38,22 +42,26 @@ public interface IGraveInventory extends Inventory {
     }
 
     @Override
-    default ItemStack removeStack(int slot) {
+    default ItemStack removeStack(int slot)
+    {
         return this.getInvStackList().remove(slot);
     }
 
     @Override
-    default void setStack(int slot, ItemStack stack) {
+    default void setStack(int slot, ItemStack stack)
+    {
         this.getInvStackList().set(slot, stack);
     }
 
     @Override
-    default boolean canPlayerUse(PlayerEntity player) {
+    default boolean canPlayerUse(PlayerEntity player)
+    {
         return false;
     }
 
     @Override
-    default void clear() {
+    default void clear()
+    {
         this.getInvStackList().clear();
     }
 

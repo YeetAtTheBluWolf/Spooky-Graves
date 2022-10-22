@@ -12,16 +12,20 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 
-public class GraveBlockEntity extends BlockEntity implements IGraveInventory {
+public class GraveBlockEntity extends BlockEntity implements IGraveInventory
+{
 
     private DefaultedList<ItemStack> items;
     private GameProfile owner;
     private int totalExperience;
 
-    public GraveBlockEntity(BlockPos pos, BlockState state) {
+    public GraveBlockEntity(BlockPos pos, BlockState state)
+    {
         super(Spookygraves.GRAVE, pos, state);
 
         this.items = DefaultedList.ofSize(size(), ItemStack.EMPTY);
+        this.owner = null;
+        this.totalExperience = 0;
     }
 
     /**
@@ -62,7 +66,8 @@ public class GraveBlockEntity extends BlockEntity implements IGraveInventory {
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void readNbt(NbtCompound tag)
+    {
         super.readNbt(tag);
 
         this.items = DefaultedList.ofSize(tag.getInt("ItemCount"), ItemStack.EMPTY);
@@ -76,7 +81,8 @@ public class GraveBlockEntity extends BlockEntity implements IGraveInventory {
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void writeNbt(NbtCompound tag)
+    {
         super.writeNbt(tag);
 
         tag.putInt("ItemCount", this.items.size());
@@ -90,7 +96,8 @@ public class GraveBlockEntity extends BlockEntity implements IGraveInventory {
     }
 
     @Override
-    public NbtCompound toClientTag(NbtCompound tag) {
+    public NbtCompound toClientTag(NbtCompound tag)
+    {
         if(owner != null)
             tag.put("GraveOwner", NbtHelper.writeGameProfile(new NbtCompound(), this.owner));
 
@@ -98,7 +105,8 @@ public class GraveBlockEntity extends BlockEntity implements IGraveInventory {
     }
 
     @Override
-    public void fromClientTag(NbtCompound tag) {
+    public void fromClientTag(NbtCompound tag)
+    {
         if(tag.contains("GraveOwner"))
             this.owner = NbtHelper.toGameProfile(tag.getCompound("GraveOwner"));
     }

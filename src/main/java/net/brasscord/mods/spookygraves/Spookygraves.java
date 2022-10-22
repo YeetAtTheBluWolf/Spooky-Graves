@@ -1,6 +1,5 @@
 package net.brasscord.mods.spookygraves;
 
-import net.brasscord.mods.spookygraves.blocks.GraveBlock;
 import net.brasscord.mods.spookygraves.entities.blocks.GraveBlockEntity;
 import net.brasscord.mods.spookygraves.register.Registries;
 import net.fabricmc.api.ModInitializer;
@@ -8,12 +7,13 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
@@ -40,28 +40,17 @@ public class Spookygraves implements ModInitializer {
         registries.getRegistries();
 
         GRAVE = Registry.register(
-                Registry.BLOCK_ENTITY_TYPE, new Identifier(id, "grave_entity"), FabricBlockEntityTypeBuilder.create(GraveBlockEntity::new, graveBlock).build()
+                Registry.BLOCK_ENTITY_TYPE, "spookygraves:grave",
+                BlockEntityType.Builder.create(GraveBlockEntity::new,
+                        graveBlock).build(null)
         );
 
         ServerPlayNetworking.registerGlobalReceiver(SET_WORLD_PACKET, (server, player, handler, buf, sender) -> {
-
             // https://stackoverflow.com/questions/65903006/how-to-change-what-block-is-at-certain-coordinates
-
             BlockPos pos = buf.readBlockPos();
             Block blockToSet = Registry.BLOCK.get(buf.readIdentifier());
-            server.execute(() -> {
-                player.getWorld().setBlockState(pos, blockToSet.getDefaultState().with(Properties.FACING, player.getMovementDirection()));
-            });
+            server.execute(() -> player.getWorld().setBlockState(pos, blockToSet.getDefaultState().with(Properties.FACING, player.getMovementDirection())));
         });
-
-        PlayerBlockBreakEvents.BEFORE.register(((world, player, pos, state, blockEntity) -> {
-            if(blockEntity instanceof GraveBlockEntity graveBlockEntity)
-            {
-                if(graveBlockEntity.getOwner() != null)
-                    return false;
-            }
-            return true;
-        }));
 
     }
 
@@ -74,39 +63,32 @@ public class Spookygraves implements ModInitializer {
      * @param  world  The world where the player was at the point in time.
      * @param  position  A Vec3d of the position of the player when the method was called.
      * @param  player  This PlayerEntity is used to set the owner of the grave.
-     * @param  inventory  This is needed to check and store the inventory information.
-     */
-    public static void graveInsert(World world, Vec3d position, PlayerEntity player, PlayerInventory inventory)
+      */
+    public static void graveInsert(World world, Vec3d position, PlayerEntity player)
     {
         if(world.isClient)
             return;
 
         BlockPos blockPos = new BlockPos(position.x, position.y, position.z);
         BlockState blockState = world.getBlockState(blockPos);
-        GraveBlock block = (GraveBlock) blockState.getBlock();
-
-        GraveBlockEntity graveBlockEntity = new GraveBlockEntity(blockPos, blockState);
-
-        int experience = player.totalExperience;
-        graveBlockEntity.setOwner(player.getGameProfile());
-
-        player.totalExperience = 0;
-        player.experienceProgress = 0;
-        player.experienceLevel = 0;
+        // Block block = blockState.getBlock();
 
         PacketByteBuf data = PacketByteBufs.create();
         data.writeBlockPos(blockPos);
         data.writeIdentifier(new Identifier(id, "grave"));
         ClientPlayNetworking.send(SET_WORLD_PACKET, data);
 
-        graveBlockEntity.sync();
-        block.onBreak(world, player, blockPos, blockState, experience);
+        GraveBlockEntity graveBlockEntity = new GraveBlockEntity(blockPos, blockState);
+        graveBlockEntity.setOwner(player.getGameProfile());
 
-        graveBlockEntity.getInvStackList().addAll(inventory.main);
-        graveBlockEntity.getInvStackList().addAll(inventory.armor);
-        graveBlockEntity.getInvStackList().addAll(inventory.offHand);
-
+        graveBlockEntity.getInvStackList().addAll(player.getInventory().main);
+        graveBlockEntity.getInvStackList().addAll(player.getInventory().armor);
+        graveBlockEntity.getInvStackList().addAll(player.getInventory().offHand);
         graveBlockEntity.setTotalExperience(player.totalExperience);
+
+        player.totalExperience = 0;
+        player.experienceProgress = 0;
+        player.experienceLevel = 0;
 
         System.out.println("Executed the graveInsert method.");
 

@@ -9,7 +9,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 
-public class Registries {
+public class Registries
+{
 
     // Blocks
     public final static GraveBlock graveBlock = new GraveBlock(FabricBlockSettings.of(Material.STONE).dropsNothing());

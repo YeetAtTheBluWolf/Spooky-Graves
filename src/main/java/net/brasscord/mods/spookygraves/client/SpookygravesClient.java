@@ -5,9 +5,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
-public class SpookygravesClient implements ClientModInitializer {
+public class SpookygravesClient implements ClientModInitializer
+{
     @Override
-    public void onInitializeClient() {
+    public void onInitializeClient()
+    {
 
     }
 
