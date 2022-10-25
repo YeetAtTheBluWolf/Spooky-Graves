@@ -55,6 +55,22 @@ public class GraveBlock extends Block implements BlockEntityProvider
     @Override
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         super.onBreak(world, pos, state, player);
+
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+
+        if(blockEntity instanceof GraveBlockEntity graveBlockEntity)
+        {
+            System.out.println("Test Two: " + !graveBlockEntity.getInvStackList().isEmpty());
+
+            if(graveBlockEntity.getOwner() != null && !graveBlockEntity.getInvStackList().isEmpty())
+            {
+                System.out.println("IF IF TEST ONBREAK METHOD");
+                ItemScatterer.spawn(world, pos, graveBlockEntity.getInvStackList());
+            }
+        }
+
+        System.out.println("TEST ONBREAK METHOD");
+
     }
 
 }

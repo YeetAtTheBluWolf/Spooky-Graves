@@ -10,17 +10,19 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+
+import java.util.Collections;
 
 import static net.brasscord.mods.spookygraves.register.Registries.SET_WORLD_PACKET;
 import static net.brasscord.mods.spookygraves.register.Registries.graveBlock;
@@ -81,9 +83,14 @@ public class Spookygraves implements ModInitializer {
         GraveBlockEntity graveBlockEntity = new GraveBlockEntity(blockPos, blockState);
         graveBlockEntity.setOwner(player.getGameProfile());
 
-        graveBlockEntity.getInvStackList().addAll(player.getInventory().main);
-        graveBlockEntity.getInvStackList().addAll(player.getInventory().armor);
-        graveBlockEntity.getInvStackList().addAll(player.getInventory().offHand);
+        DefaultedList<ItemStack> items = DefaultedList.of();
+
+        items.addAll(player.getInventory().main);
+        items.addAll(player.getInventory().armor);
+        items.addAll(player.getInventory().offHand);
+
+        graveBlockEntity.setStacks(items);
+
         graveBlockEntity.setTotalExperience(player.totalExperience);
 
         player.totalExperience = 0;

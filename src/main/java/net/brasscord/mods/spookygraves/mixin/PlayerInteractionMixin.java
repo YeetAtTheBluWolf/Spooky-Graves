@@ -19,20 +19,20 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class PlayerInteractionMixin
 {
 
-    @Inject(method = "breakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, World world, Block block, BlockState blockState, PlayerEntity player)
-    {
-
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-
-        if(blockEntity instanceof GraveBlockEntity graveBlockEntity && block instanceof GraveBlock graveBlock)
-        {
-            if(graveBlockEntity.getOwner() != null)
-            {
-                graveBlock.onBreak(world, pos, blockState, player);
-            }
-        }
-
-    }
+//    @Inject(method = "breakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+//    private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, World world, Block block, BlockState blockState, PlayerEntity player)
+//    {
+//
+//        BlockEntity blockEntity = world.getBlockEntity(pos);
+//
+//        if(blockEntity instanceof GraveBlockEntity graveBlockEntity && block instanceof GraveBlock graveBlock)
+//        {
+//            if(graveBlockEntity.getOwner() != null)
+//            {
+//                graveBlock.onBreak(world, pos, blockState, player);
+//            }
+//        }
+//
+//    }
 
 }

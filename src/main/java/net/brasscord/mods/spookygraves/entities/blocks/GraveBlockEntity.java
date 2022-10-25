@@ -9,8 +9,12 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 public class GraveBlockEntity extends BlockEntity implements IGraveInventory
 {
@@ -52,6 +56,12 @@ public class GraveBlockEntity extends BlockEntity implements IGraveInventory
     @Override
     public DefaultedList<ItemStack> getInvStackList() {
         return items;
+    }
+
+    public void setStacks(DefaultedList<ItemStack> defaultedList)
+    {
+        items = defaultedList;
+        this.markDirty();
     }
 
     public int getTotalExperience()
@@ -109,6 +119,17 @@ public class GraveBlockEntity extends BlockEntity implements IGraveInventory
     {
         if(tag.contains("GraveOwner"))
             this.owner = NbtHelper.toGameProfile(tag.getCompound("GraveOwner"));
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
+
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        return createNbt();
     }
 
 }
