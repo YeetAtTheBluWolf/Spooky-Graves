@@ -1,6 +1,7 @@
 package net.brasscord.mods.spookygraves.register;
 
 import net.brasscord.mods.spookygraves.Spookygraves;
+import net.brasscord.mods.spookygraves.blocks.DebugBlock;
 import net.brasscord.mods.spookygraves.blocks.GraveBlock;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Material;
@@ -13,7 +14,7 @@ public class Registries
 {
 
     // Blocks
-    public final static GraveBlock graveBlock = new GraveBlock(FabricBlockSettings.of(Material.STONE).dropsNothing());
+    public final static GraveBlock graveBlock = new GraveBlock(FabricBlockSettings.of(Material.STONE));
 
     // Items
     private final BlockItem graveItem = new BlockItem(graveBlock, new Item.Settings().group(ItemGroup.DECORATIONS).maxCount(16));

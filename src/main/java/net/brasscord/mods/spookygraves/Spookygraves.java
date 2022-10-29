@@ -1,5 +1,6 @@
 package net.brasscord.mods.spookygraves;
 
+import net.brasscord.mods.spookygraves.blocks.GraveBlock;
 import net.brasscord.mods.spookygraves.entities.blocks.GraveBlockEntity;
 import net.brasscord.mods.spookygraves.register.Registries;
 import net.fabricmc.api.ModInitializer;
@@ -73,7 +74,16 @@ public class Spookygraves implements ModInitializer {
 
         BlockPos blockPos = new BlockPos(position.x, position.y, position.z);
         BlockState blockState = world.getBlockState(blockPos);
-        // Block block = blockState.getBlock();
+
+        DefaultedList<ItemStack> items = DefaultedList.of();
+        items.addAll(player.getInventory().main);
+        items.addAll(player.getInventory().armor);
+        items.addAll(player.getInventory().offHand);
+
+        int experience = player.totalExperience;
+        player.totalExperience = 0;
+        player.experienceProgress = 0;
+        player.experienceLevel = 0;
 
         PacketByteBuf data = PacketByteBufs.create();
         data.writeBlockPos(blockPos);
@@ -81,21 +91,10 @@ public class Spookygraves implements ModInitializer {
         ClientPlayNetworking.send(SET_WORLD_PACKET, data);
 
         GraveBlockEntity graveBlockEntity = new GraveBlockEntity(blockPos, blockState);
-        graveBlockEntity.setOwner(player.getGameProfile());
-
-        DefaultedList<ItemStack> items = DefaultedList.of();
-
-        items.addAll(player.getInventory().main);
-        items.addAll(player.getInventory().armor);
-        items.addAll(player.getInventory().offHand);
-
         graveBlockEntity.setStacks(items);
-
-        graveBlockEntity.setTotalExperience(player.totalExperience);
-
-        player.totalExperience = 0;
-        player.experienceProgress = 0;
-        player.experienceLevel = 0;
+        graveBlockEntity.setTotalExperience(experience);
+        graveBlockEntity.setOwner(player.getGameProfile());
+        world.addBlockEntity(graveBlockEntity);
 
         System.out.println("Executed the graveInsert method.");
 

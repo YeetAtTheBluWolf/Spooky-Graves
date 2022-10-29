@@ -5,27 +5,29 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
+import static net.brasscord.mods.spookygraves.Spookygraves.GRAVE;
 import static net.minecraft.state.property.Properties.FACING;
 
 public class GraveBlock extends Block implements BlockEntityProvider
 {
 
-    public GraveBlock(Settings settings) {
+    public GraveBlock(Settings settings)
+    {
         super(settings);
+        setDefaultState(this.getStateManager().getDefaultState().with(FACING, Direction.NORTH));
     }
 
     /**
@@ -54,22 +56,32 @@ public class GraveBlock extends Block implements BlockEntityProvider
 
     @Override
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+
+        graveRetrieval(world, pos);
         super.onBreak(world, pos, state, player);
+        System.out.println("TEST ONBREAK METHOD");
+
+    }
+
+    private void graveRetrieval(World world, BlockPos pos)
+    {
+        if(world.isClient)
+            return;
 
         BlockEntity blockEntity = world.getBlockEntity(pos);
 
-        if(blockEntity instanceof GraveBlockEntity graveBlockEntity)
-        {
-            System.out.println("Test Two: " + !graveBlockEntity.getInvStackList().isEmpty());
+        if(!(blockEntity instanceof GraveBlockEntity))
+            return;
 
-            if(graveBlockEntity.getOwner() != null && !graveBlockEntity.getInvStackList().isEmpty())
-            {
-                System.out.println("IF IF TEST ONBREAK METHOD");
-                ItemScatterer.spawn(world, pos, graveBlockEntity.getInvStackList());
-            }
-        }
+        GraveBlockEntity graveBlockEntity = (GraveBlockEntity) blockEntity;
+        graveBlockEntity.markDirty();
 
-        System.out.println("TEST ONBREAK METHOD");
+        if(graveBlockEntity.getItems() == null)
+            return;
+
+        ItemScatterer.spawn(world, pos, graveBlockEntity.getItems());
+        graveBlockEntity.setStacks(DefaultedList.copyOf(ItemStack.EMPTY));
+
 
     }
 

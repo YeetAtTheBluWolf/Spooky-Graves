@@ -16,7 +16,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-public class GraveBlockEntity extends BlockEntity implements IGraveInventory
+public class GraveBlockEntity extends BlockEntity //implements IGraveInventory
 {
 
     private DefaultedList<ItemStack> items;
@@ -27,7 +27,7 @@ public class GraveBlockEntity extends BlockEntity implements IGraveInventory
     {
         super(Spookygraves.GRAVE, pos, state);
 
-        this.items = DefaultedList.ofSize(size(), ItemStack.EMPTY);
+        this.items = DefaultedList.ofSize(41, ItemStack.EMPTY);
         this.owner = null;
         this.totalExperience = 0;
     }
@@ -53,8 +53,7 @@ public class GraveBlockEntity extends BlockEntity implements IGraveInventory
         this.markDirty();
     }
 
-    @Override
-    public DefaultedList<ItemStack> getInvStackList() {
+    public DefaultedList<ItemStack> getItems() {
         return items;
     }
 
@@ -103,22 +102,6 @@ public class GraveBlockEntity extends BlockEntity implements IGraveInventory
 
         if(owner != null)
             tag.put("GraveOwner", NbtHelper.writeGameProfile(new NbtCompound(), owner));
-    }
-
-    @Override
-    public NbtCompound toClientTag(NbtCompound tag)
-    {
-        if(owner != null)
-            tag.put("GraveOwner", NbtHelper.writeGameProfile(new NbtCompound(), this.owner));
-
-        return tag;
-    }
-
-    @Override
-    public void fromClientTag(NbtCompound tag)
-    {
-        if(tag.contains("GraveOwner"))
-            this.owner = NbtHelper.toGameProfile(tag.getCompound("GraveOwner"));
     }
 
     @Nullable
