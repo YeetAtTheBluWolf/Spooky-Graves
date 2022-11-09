@@ -14,12 +14,12 @@ public class ItemRegister
     * @param  name  This takes a string, and it's used to id the item.
     * @param  item  This takes an item, and it's used to register the item given.
     */
-    protected static void register(String name, Item item)
+    public static void register(String name, Item item)
     {
         Registry.register(Registry.ITEM, new Identifier(Spookygraves.id, name), item);
     }
 
-    protected static void register(Identifier identifier, Item item)
+    public static void register(Identifier identifier, Item item)
     {
         Registry.register(Registry.ITEM, identifier, item);
     }

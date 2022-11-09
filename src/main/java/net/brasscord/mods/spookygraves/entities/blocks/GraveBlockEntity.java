@@ -2,7 +2,6 @@ package net.brasscord.mods.spookygraves.entities.blocks;
 
 import com.mojang.authlib.GameProfile;
 import net.brasscord.mods.spookygraves.Spookygraves;
-import net.brasscord.mods.spookygraves.utilities.inventories.IGraveInventory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.Inventories;
@@ -16,7 +15,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-public class GraveBlockEntity extends BlockEntity //implements IGraveInventory
+public class GraveBlockEntity extends BlockEntity
 {
 
     private DefaultedList<ItemStack> items;
@@ -26,7 +25,6 @@ public class GraveBlockEntity extends BlockEntity //implements IGraveInventory
     public GraveBlockEntity(BlockPos pos, BlockState state)
     {
         super(Spookygraves.GRAVE, pos, state);
-
         this.items = DefaultedList.ofSize(41, ItemStack.EMPTY);
         this.owner = null;
         this.totalExperience = 0;
@@ -53,7 +51,8 @@ public class GraveBlockEntity extends BlockEntity //implements IGraveInventory
         this.markDirty();
     }
 
-    public DefaultedList<ItemStack> getItems() {
+    public DefaultedList<ItemStack> getItems()
+    {
         return items;
     }
 
@@ -106,12 +105,14 @@ public class GraveBlockEntity extends BlockEntity //implements IGraveInventory
 
     @Nullable
     @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+    public Packet<ClientPlayPacketListener> toUpdatePacket()
+    {
         return BlockEntityUpdateS2CPacket.create(this);
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt() {
+    public NbtCompound toInitialChunkDataNbt()
+    {
         return createNbt();
     }
 

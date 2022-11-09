@@ -1,9 +1,42 @@
 {
-  "parent": "minecraft:block/orientable",
+  "credit": "Made with Blockbench",
+  "texture_size": [128, 64],
   "textures": {
-    "front": "spookygraves:block/placeholder",
-    "side": "spookygraves:block/placeholder",
-    "top": "spookygraves:block/placeholder"
-  }
+    "1": "spookygraves:block/rip",
+    "2": "spookygraves:block/topgrave",
+    "particle": "minecraft:block/cobblestone"
+  },
+  "elements": [
+    {
+      "from": [13, 0, 1],
+      "to": [15, 14, 15],
+      "faces": {
+        "north": {"uv": [7, 0, 8, 7], "texture": "#1"},
+        "east": {"uv": [0, 0, 7, 7], "texture": "#1"},
+        "south": {"uv": [7, 7, 8, 14], "texture": "#1"},
+        "west": {"uv": [0, 7, 7, 14], "texture": "#1"},
+        "up": {"uv": [9, 7, 8, 0], "texture": "#1"},
+        "down": {"uv": [9, 7, 8, 14], "texture": "#1"}
+      }
+    },
+    {
+      "from": [13, 14, 2],
+      "to": [15, 16, 14],
+      "faces": {
+        "north": {"uv": [4, 4, 6, 6], "texture": "#2"},
+        "east": {"uv": [0, 0, 12, 2], "texture": "#2"},
+        "south": {"uv": [4, 6, 6, 8], "texture": "#2"},
+        "west": {"uv": [0, 2, 12, 4], "texture": "#2"},
+        "up": {"uv": [2, 16, 0, 4], "texture": "#2"},
+        "down": {"uv": [4, 4, 2, 16], "texture": "#2"}
+      }
+    }
+  ],
+  "groups": [
+    {
+      "name": "Grave",
+      "origin": [0, 0, 0],
+      "children": [0, 1]
+    }
+  ]
 }
-
